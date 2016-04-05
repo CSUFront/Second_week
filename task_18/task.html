@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task_18</title>
+</head>
+<style type="text/css">
+	#container li{
+		font-size: 30px;
+		width: 50px;
+		height: 50px;
+		text-align: center;
+		color: red;
+		float: left;
+		list-style: none;
+		padding-left: 50px;
+	}
+</style>
+<body>
+	<input id="input_num" type="text" placeholder="请输入数字" />
+	<button id="add_left">左侧入</button>
+	<button id="add_right">右侧入</button>
+	<button id="out_left">左侧出</button>
+	<button id="out_right">右侧出</button>    <br>
+	<ul id="container"></ul>
+<script>
+var arry=[];   //存放输入的数字
+var to_add_inp=document.getElementById("input_num");
+
+	add_into_arry();
+// 把数字加入和抛出数组
+	function add_into_arry(){
+		var butt=document.getElementsByTagName("button");
+		for(var i=0;i<butt.length;i++ ){
+		butt[i].addEventListener("click",function(){
+			var num=to_add_inp.value;
+			if(!num.match(/^\d+$/)){
+						alert("请输入数字");
+						return;
+					}
+				switch(this.id){
+					case "add_left": arry.unshift(num);shownum();
+						break;
+					case "add_right":arry.push(num);shownum();
+						break;
+					case "out_left":
+					if(arry.length>0){
+						arry.shift();
+						shownum();
+					}
+					else{
+						alert("没有数据可以删除了");
+					}
+					
+						break;
+					case "out_right":
+					if(arry.length>0){
+						arry.pop();
+						shownum();
+					}
+					else{
+						alert("没有数据可以删除了");
+					}
+						break;
+				}
+			})
+		}
+	}
+//把数组显示在页面上
+function  shownum(){
+	var show_ul=document.getElementById("container");
+	var add_html="";
+	for(var i=0;i<arry.length;i++){
+		add_html+="<li>"+arry[i]+"</li>";
+	}
+	show_ul.innerHTML=add_html;
+}
+</script>
+</body>
+</html>

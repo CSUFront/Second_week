@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task_18</title>
+</head>
+<style type="text/css">
+	#container li{
+		font-size: 20px;
+		width: 40px;
+		height: 40px;
+		text-align: center;
+		color: red;
+		float: left;
+		list-style: none;
+	}
+	#chart{
+		width: 100%;
+		height: 300px;
+
+	}
+	#chart li{
+		margin-top:20px; 
+		margin-left: 2px;
+		float: left;
+		list-style: none;
+		width: 11px;
+		border:1px solid gray;
+	}
+</style>
+<body>
+	<input id="input_num" type="text" placeholder="请输入数字" />
+	<button id="add_left">左侧入</button>
+	<button id="add_right">右侧入</button>
+	<button id="out_left">左侧出</button>
+	<button id="out_right">右侧出</button>
+	<button id ="sort">排序</button>  
+	<button id ="clear">清空</button>  <br>
+	<ul id="chart" >
+
+		
+
+	</ul>
+	<ul id="container"></ul>
+
+
+<script>
+var arry=[];   //存放输入的数字
+var to_add_inp=document.getElementById("input_num");
+// 生成随机数加入数组
+	window.onload=function(){
+
+	for(var i=0;i<30;i++){
+
+		var num =parseInt(90*Math.random()+10)  ;
+		arry[i]=num;	
+	}
+	shownum();
+	}
+	add_into_arry();
+// 把数字加入和抛出数组
+	function add_into_arry(){
+		var butt=document.getElementsByTagName("button");
+		for(var i=0;i<butt.length;i++ ){
+		butt[i].addEventListener("click",function(){
+			var num=to_add_inp.value;
+			switch(this.id){
+				case "sort":
+					sort();
+					return;	
+				case "clear":
+					clear();
+				return;
+			}
+
+			if(num<10||num>100||!num.match(/^\d+$/)){
+				alert("请输入10-100之内的数字");
+				return;
+			}
+				switch(this.id){
+					case "add_left":
+					if(arry.length<60){
+					 arry.unshift(num);
+					 shownum();
+					}else{
+						alert("只能输入60个数字")
+					}
+						break;
+					
+					case "add_right":
+					if(arry.length<60){
+
+
+					arry.push(num);
+					shownum();
+				}else{
+					alert("只能输入60个数字");
+				}
+						break;
+					case "out_left":
+						if(arry.length>0){
+						arry.shift();
+						shownum();
+						}
+						else{
+						alert("没有数据可以删除了");
+						}
+					
+						break;
+					case "out_right":
+						if(arry.length>0){
+						arry.pop();
+						shownum();
+						}
+						else{
+						alert("没有数据可以删除了");
+						}
+						break;
+					
+				}
+			})
+		}
+	}
+//把数组显示在页面上
+function  shownum(){
+	var show_ul=document.getElementById("container");
+	var chart_ul=document.getElementById("chart");
+	var add_text="";
+	var add_chart="";
+	
+	for(var i=0;i<arry.length;i++){
+		// 显示数字
+		add_text+="<li>"+arry[i]+"</li>";
+		add_chart+='<li style="height:'+arry[i]+'px; background-color:#'+(000+11*arry[i])+'"></li>';
+		
+		}
+	show_ul.innerHTML=add_text;
+	chart_ul.innerHTML=add_chart;
+}
+
+	function sort () {
+		var i=0,j=1 ,delay=false;
+		for(;i<arry.length;i++){
+			for(;j<arry.length;j++){
+				if(arry[j]<arry[j-1]){
+				var temp=arry[j];
+				arry[j]=arry[j-1];
+				arry[j-1]=temp;
+				shownum();
+				}
+			}
+			j=0;
+		
+		}
+	}
+	function clear(){
+		arry=[];
+		shownum();
+	}
+
+
+
+
+
+</script>
+</body>
+</html>
