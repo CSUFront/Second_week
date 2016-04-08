@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task_20</title>
+</head>
+<style type="text/css">
+	#container li{
+		font-size: 30px;
+		width: 50px;
+		height: 50px;
+		text-align: center;
+		color: red;
+		float: left;
+		list-style: none;
+		padding-left: 50px;
+	}
+</style>
+<body>
+	<textarea id="input_num" type="text"  ></textarea>
+	<button id="add_left">左侧入</button>
+	<button id="add_right">右侧入</button>
+	<button id="out_left">左侧出</button>
+	<button id="out_right">右侧出</button>>>>>>>>>
+	<input type="text" id="search_text">
+	<button id="search_btn">搜索</button>   <br>
+	<ul id="container"></ul>
+<script>
+var arry=[];   //存放输入的数字
+var to_add_inp=document.getElementById("input_num");
+var search_btn=document.getElementById("search_btn");
+var container=document.getElementById("container");
+	//搜索功能
+	search_btn.addEventListener("click",function(){
+
+		var search_text=document.getElementById("search_text").value.trim();  //trim去掉空格
+		var container_li=container.getElementsByTagName("li");
+		for(var i=0;i<container_li.length;i++){
+		
+			if(container_li[i].innerHTML.indexOf(search_text)>=0){
+					container_li[i].style.color="black";
+					container_li[i].style.fontSize="35px";
+			}
+			else{
+				container_li[i].style.color="red";
+				container_li[i].style.fontSize="30px";
+			}
+		}
+
+	})
+	//对输入的字符串进行处理
+	//words是输入的字符
+	//action是判断左侧还是右侧插入
+	function getwords(words,action){
+		var word=[];
+		//对输入的字符进行截取并返回数组
+		word=words.split(/[^0-9a-zA-Z\u4e00-\u9fa5]+/).filter(function(d){return d != '';});
+		if(action=="unshift"){
+			for(var i=0;i<word.length;i++){
+				var length=word.length;
+			arry.unshift(word[length-1-i]);   //要倒序加入
+			}
+		}
+		if(action=="push"){
+			for(var i=0;i<word.length;i++){  
+			arry.push(word[i]);
+		}
+		
+		}
+	}
+
+
+	add_into_arry();
+// 把数字加入和抛出数组
+	function add_into_arry(){
+		var butt=document.getElementsByTagName("button");
+		for(var i=0;i<butt.length;i++ ){
+		butt[i].addEventListener("click",function(){
+			var num=to_add_inp.value;
+			// if(!num.match(/^\d+$/)){
+			// 			alert("请输入数字");
+			// 			return;
+			// 		}
+				switch(this.id){
+					case "add_left": 
+					getwords(num,"unshift");
+					// arry.unshift(num);
+					shownum();
+						break;
+					case "add_right":
+					// arry.push(num);
+					getwords(num,"push");
+					shownum();
+						break;
+					case "out_left":
+					if(arry.length>0){
+						arry.shift();
+						shownum();
+					}
+					else{
+						alert("没有数据可以删除了");
+					}
+					
+						break;
+					case "out_right":
+					if(arry.length>0){
+						arry.pop();
+						shownum();
+					}
+					else{
+						alert("没有数据可以删除了");
+					}
+						break;
+				}
+			})
+		}
+	}
+//把数组显示在页面上
+function  shownum(){
+	var show_ul=document.getElementById("container");
+	var add_html="";
+	for(var i=0;i<arry.length;i++){
+		add_html+="<li>"+arry[i]+"</li>";
+	}
+	show_ul.innerHTML=add_html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task_21</title>
+</head>
+<style type="text/css">
+body{
+	margin: 0;
+	padding: 10px 10px;
+	overflow:  hidden;
+}
+	#container li{
+		font-size: 30px;
+		width: 50px;
+		height: 50px;
+		text-align: center;
+		color: red;
+		float: left;
+		list-style: none;
+		padding-left: 50px;
+	}
+	#tag_ul {
+		width: 100%;
+		height: 200px;
+	}
+	#tag_ul li{
+		min-width: 50px;
+		font-size: 30px;
+		margin-left: 20px;
+		float: left;
+		list-style: none;
+		width: auto;
+		height: 40px;
+		color: red;
+		background-color: #a0faa0;
+		text-align: center;
+	}
+	#tag_ul li:hover{
+		cursor: pointer;
+		background-color: red;
+		color:white;
+	}
+	#tag_ul li:hover:before{
+		content:"点击删除";
+	}
+</style>
+<body>
+	<input id ="tag_inp" >
+	<ul id="tag_ul"></ul>
+
+	<hr>
+	<textarea id="input_num" type="text"  ></textarea> -----------------  
+	<!-- <button id="add_left">左侧入</button>
+	<button id="add_right">右侧入</button>
+	<button id="out_left">左侧出</button> -->
+	<button id="add_hobby">添加</button>>>>>>>>>
+	<input type="text" id="search_text">
+	<button id="search_btn">搜索</button>   <br>
+	<ul id="container">
+	</ul>
+<script>
+var arry=[];   //存放输入的数字
+var tag=[];		//	存放tag的数组
+
+var tag_inp=document.getElementById("tag_inp");
+var to_add_inp=document.getElementById("input_num");
+var search_btn=document.getElementById("search_btn");
+var container=document.getElementById("container");
+var add_btn=document.getElementById("add_hobby");
+var tag_ul=document.getElementById("tag_ul");
+	
+
+	
+
+
+
+
+
+
+	//搜索功能
+	search_btn.addEventListener("click",function(){
+
+		var search_text=document.getElementById("search_text").value.trim();  //trim去掉空格
+		var container_li=container.getElementsByTagName("li");
+		for(var i=0;i<container_li.length;i++){
+		
+			if(container_li[i].innerHTML.indexOf(search_text)>=0){
+					container_li[i].style.color="black";
+					container_li[i].style.fontSize="35px";
+			}
+			else{
+				container_li[i].style.color="red";
+				container_li[i].style.fontSize="30px";
+			}
+		}
+
+	})
+	
+//-------------------添加兴趣爱好
+		add_btn.addEventListener("click",function(){
+			var num=to_add_inp.value;  //先得到输入的数据
+			getwords(num,arry);				//对数据进行处理得到数字
+			clear_same(arry);				//对数组进行去重处理
+			only_ten(arry);					//限制只能有十个元素
+			shownum(arry);					//显示在网页上
+
+
+		})
+ 
+//-------------------添加TAG           !!!!!!!!!!!!!!!!!!!!!!!!!!!此处有个BUG!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	tag_inp.addEventListener("keypress",function (e){
+		if(e.keyCode==13 || e.keyCode==32 || e.keyCode==44 ){
+			var tag_name=tag_inp.value.trim();
+			tag_inp.value=null;
+			getwords(tag_name,tag);
+			clear_same(tag);
+			only_ten(tag);	
+			showtag(tag);
+			tag_inp.value=null;
+		}
+	})
+
+
+
+//对输入的字符串进行处理,添加到arry数组中去
+	
+	function getwords(words,arry){
+		var word=[];
+		//对输入的字符进行截取并返回数组
+		word=words.split(/[^0-9a-zA-Z\u4e00-\u9fa5]+/).filter(function(d){return d != '';});
+		
+			for(var i=0;i<word.length;i++){  
+			arry.push(word[i]);
+		}
+		
+		
+	}
+
+
+// 去重的方法
+	function clear_same(arry){
+			for(var i=0;i<arry.length;i++){
+				var j=i+1;
+				for(;j<arry.length;){
+					if(arry[i]==arry[j]){
+						arry.splice(j,1);         //从j位置删除一个元素
+					}
+					else{
+						j=j+1;
+					}
+				}
+
+			}
+	}
+//限制数组只能有十个元素
+	function only_ten(arry){
+		if(arry.length>10){
+			minus_num=arry.length-10;
+			arry.splice(0,minus_num);
+		}
+
+	}
+
+//把数组显示在页面上
+function  shownum(arry){
+	var show_ul=document.getElementById("container");
+	var add_html="";
+	for(var i=0;i<arry.length;i++){
+		add_html+="<li>"+arry[i]+"</li>";
+	}
+	show_ul.innerHTML=add_html;
+}
+//      删除tag
+     addEvent(tag_ul, "mouseover", function(){hover(event);});
+function hover(ev){
+        var event = ev || window.event;
+        var obj = event.srcElement ? event.srcElement:event.target;
+
+        if(obj.nodeName.toLowerCase() === "li"){
+            
+           
+            addEvent(obj, "click", function(){
+               alert("das")
+            });
+        }
+    }
+
+
+//将tag显示在网页上
+function showtag(tag){
+	tag_ul.innerHTML="";                     //要先移除所有的子元素，在遍历数组添加上去
+	for(var i=0;i<tag.length;i++){
+		var li=document.createElement("li");
+		li.innerHTML=tag[i];
+		tag_ul.appendChild(li);
+		li.onclick=function(){                   //删除
+			tag_ul.removeChild(this);
+		};
+	}
+}
+
+
+</script>
+</body>
+</html>
