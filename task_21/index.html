@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>匹配</title>
+    <style type="text/css">
+        body {
+            font-size: 24px;
+            font-family: sans-serif;
+        }
+        ul {
+            display: flex;
+            align-items: flex-end;
+            padding: 0;
+        }
+        li {
+            height: 30px;
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            color: #FFFFFF;
+            cursor: pointer;
+        }
+        ul#tlst li {
+            background-color: #8BC8FE;
+        }
+        ul#hlst li {
+            background-color: #F6CA83;
+        }
+        input.ipt {
+            border: 3px solid #D8D8D8;
+        }
+        input.ipt:focus {
+            border: 3px solid #74AFE7;
+            border-radius: 1px;
+        }
+    </style>
+</head>
+<body>
+    Tag:<input class="ipt" type="text" />
+    <br />
+    <ul id="tlst"></ul>
+    <textarea class="ipt" rows="10" cols="30" placeholder="请输入数字、中文、英文，用回车，逗号，顿号，空格隔开"></textarea>
+    <br />
+    <button id="confirm">确认兴趣爱好</button>
+    <ul id="hlst"></ul>
+
+    <script>
+        var tag = [];
+        var hobby = [];
+        var ipt = document.getElementsByClassName("ipt");
+        var iptTag = ipt[0];
+        var iptHobby = ipt[1];
+        var tlst = document.getElementById("tlst");
+        var hlst = document.getElementById("hlst");
+
+        // 对输入的tag和hobby数据进行trim和去重
+        function handler(data) {
+            var result = [];
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i].trim();
+                if (result.indexOf(d) === -1) {
+                    if (result.length >= 10) {
+                        result.shift();
+                    }
+                    result.push(d);
+                }
+            }
+            return result;
+        }
+
+        // 渲染
+        function rendor(data, lst) {
+            lst.innerHTML = "";
+            for (var i = 0; i < data.length; i++) {
+                var li = document.createElement("li");
+                li.innerText = data[i];
+                lst.appendChild(li);
+            }
+        }
+
+        // 过滤器
+        function dataFilter(d) {
+            return (d !== null && d.length !== 0);
+        }
+
+        // tag监听，传入渲染
+        iptTag.addEventListener("keypress", function (e) {
+            var re = /[\s\r,，]+/;
+            tag = handler(e.target.value.split(re).filter(dataFilter));
+            rendor(tag, tlst);
+        })
+        
+        // hobby确认，传入渲染
+        function confirm() {
+            var re = /[\n,，、\s\u3000\t]+/;
+            hobby = handler(iptHobby.value.split(re).filter(dataFilter));
+            rendor(hobby, hlst);
+        }
+
+        // 删除事件
+        function delData(e, lis, lst) {
+            if (e.target.nodeName !== "LI") return;
+            var data = e.target.innerText.replace(/点击删除/, "");
+            lis.splice(lis.indexOf(data), 1);
+            rendor(lis, lst);
+        }
+
+        // 绑定删除事件
+        tlst.addEventListener("click", function (e) {
+            delData(e, tag, tlst);
+        });
+        hlst.addEventListener("click", function (e) {
+            delData(e, hobby, hlst);
+        });
+
+        // 添加鼠标悬停事件
+        tlst.addEventListener("mouseover", function (e) {
+            if (e.target.nodeName !== "LI") return;
+            var t = e.target.innerText;
+            e.target.innerText = "点击删除" + t;
+            e.target.style.backgroundColor = "#FD0000";
+        })
+        tlst.addEventListener("mouseout", function (e) {
+            if (e.target.nodeName !== "LI") return;
+            var t = e.target.innerText;
+            e.target.innerText = t.replace(/点击删除/, "");
+            e.target.style.backgroundColor = "#8BC8FE";
+        })
+
+        // 绑定确认按钮事件
+        document.getElementById("confirm").onclick = confirm;
+    </script>
+</body>
+</html>
