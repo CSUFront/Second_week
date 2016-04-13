@@ -55,7 +55,8 @@
         var hlst = document.getElementById("hlst");
 
         // 对输入的tag和hobby数据进行trim和去重
-        function handler(data) {
+        function handler(data, re) {
+
             var result = [];
             for (var i = 0; i < data.length; i++) {
                 var d = data[i].trim();
@@ -79,24 +80,31 @@
             }
         }
 
-        // 过滤器
-        function dataFilter(d) {
-            return (d !== null && d.length !== 0);
-        }
-
         // tag监听，传入渲染
-        iptTag.addEventListener("keypress", function (e) {
-            var re = /[\s\r,，]+/;
-            tag = handler(e.target.value.split(re).filter(dataFilter));
-            rendor(tag, tlst);
-        })
+        function listenTag(e) {
+            var str = e.target.value;
+            if (e.keyCode === 13 || e.keyCode === 32 || e.keyCode === 188 || /(，)$/.test(str)) {
+                var newTag = str.replace(/[\s,，]/, "");
+                if (newTag !== "") {
+                    tag = handler(tag.concat(newTag));
+                    rendor(tag, tlst);
+                }
+                e.target.value = null;
+            }
+        }
+        // 绑定键盘按键事件
+        iptTag.onkeyup = listenTag;
         
         // hobby确认，传入渲染
         function confirm() {
             var re = /[\n,，、\s\u3000\t]+/;
-            hobby = handler(iptHobby.value.split(re).filter(dataFilter));
+            hobby = handler(hobby.concat(iptHobby.value.split(re).filter(function (d) {
+                return (d !== null && d.length !== 0);
+            })));
             rendor(hobby, hlst);
         }
+        // 绑定确认按钮事件
+        document.getElementById("confirm").onclick = confirm;
 
         // 删除事件
         function delData(e, lis, lst) {
@@ -105,8 +113,7 @@
             lis.splice(lis.indexOf(data), 1);
             rendor(lis, lst);
         }
-
-        // 绑定删除事件
+        // 添加删除事件监听
         tlst.addEventListener("click", function (e) {
             delData(e, tag, tlst);
         });
@@ -114,7 +121,7 @@
             delData(e, hobby, hlst);
         });
 
-        // 添加鼠标悬停事件
+        // 添加鼠标悬停事件事件监听
         tlst.addEventListener("mouseover", function (e) {
             if (e.target.nodeName !== "LI") return;
             var t = e.target.innerText;
@@ -126,10 +133,7 @@
             var t = e.target.innerText;
             e.target.innerText = t.replace(/点击删除/, "");
             e.target.style.backgroundColor = "#8BC8FE";
-        })
-
-        // 绑定确认按钮事件
-        document.getElementById("confirm").onclick = confirm;
+        }) 
     </script>
 </body>
 </html>
